@@ -14,7 +14,9 @@ class cMainredun {
                  $arFields = $ob->GetFields();                      
                  $arProps = $ob->GetProperties();
             }  
-
+        foreach ($arProps as $key => $value) {
+            $arProp[$key]=$value["VALUE"];
+        }
         $el = new CIBlockElement;
         $arLoadProductArray = Array(
             "NAME"=> $arFields["NAME"],
@@ -23,10 +25,10 @@ class cMainredun {
             "DATE_ACTIVE_FROM"=> $arFields["DATE_ACTIVE_FROM"],
             "DATE_ACTIVE_TO"=> $arFields["DATE_ACTIVE_TO"],
             "SORT"=> $arFields["SORT"],
-            "PREVIEW_PICTURE"=> $arFields["PREVIEW_PICTURE"],
+            "PREVIEW_PICTURE"=> CFile::MakeFileArray($arFields["PREVIEW_PICTURE"]),
             "PREVIEW_TEXT"=> $arFields["PREVIEW_TEXT"],
             "PREVIEW_TEXT_TYPE"=> $arFields["PREVIEW_TEXT_TYPE"],
-            "DETAIL_PICTURE"=> $arFields["DETAIL_PICTURE"],
+            "DETAIL_PICTURE"=> CFile::MakeFileArray($arFields["DETAIL_PICTURE"]),
             "DETAIL_TEXT"=> $arFields["DETAIL_TEXT"],
             "DETAIL_TEXT_TYPE"=> $arFields["DETAIL_TEXT_TYPE"],
             "SEARCHABLE_CONTENT"=> $arFields["SEARCHABLE_CONTENT"],
@@ -45,7 +47,7 @@ class cMainredun {
             "WF_STATUS_ID"=> $arFields["WF_STATUS_ID"],
             "LOCK_STATUS"=> $arFields["LOCK_STATUS"],
             "TAGS"=> $arFields["TAGS"],
-            "PROPERTY_VALUES"=> $arProps
+            "PROPERTY_VALUES"=> $arProp
           );
         if($PRODUCT_ID = $el->Add($arLoadProductArray))
             return true;
