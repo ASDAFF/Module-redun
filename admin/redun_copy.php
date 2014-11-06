@@ -10,6 +10,13 @@ if (isset($_POST["STEP"])){
   $STEP=1;
 }	
 //--------------------------------------------------------------
+if (isset($_POST["IBLOCK_ID"])){
+  $IBLOCK_ID=$_POST["IBLOCK_ID"];
+}
+
+if (isset($_POST["IBLOCK_ID2"])){
+  $IBLOCK_ID2=$_POST["IBLOCK_ID2"];
+}
 
 if (isset($_POST["backButton"])){
   $STEP=$STEP-1;
@@ -19,13 +26,12 @@ if (isset($_POST["backButton"])){
 
 
 if (isset($_POST["Copy"])){
-  if (cMainredun::Copy($_POST["IBLOCK_ID"],$_POST["IBLOCK_ID2"],$_POST["idel"])){
-    header('Location: '.$APPLICATION->GetCurPage());
+  if (cMainredun::Copy($_POST["IBLOCK_ID"],$_POST["IBLOCK_ID2"],$_POST["ID"])){
+    header('Location: '.$APPLICATION->GetCurPage()."?status=OK");
   }
 }
 
-
-if ($STEP==3){
+    $lAdmin=0;
     $sTableID = "tbl_rubric"; // ID таблицы
     $oSort = new CAdminSorting($sTableID, "ID", "desc"); // объект сортировки
     $lAdmin = new CAdminList($sTableID, $oSort); // основной объект списка
@@ -104,94 +110,51 @@ if ($STEP==3){
 
 
         $lAdmin->CheckListMode();
-      }
-    $aTabs = array(
-      array("DIV" => "edit1",
-            "TAB" => "Инфоблок источник",
-            "TITLE"=> "Выбор информационного блока из которого копировать"),
-      array("DIV" => "edit2",
-            "TAB" => "Инфоблок приемник",
-            "TITLE"=> "Выбор информационного блока в который копировать"),
-      array("DIV" => "edit3",
-            "TAB" => "Элемент",
-            "TITLE"=> "Выбор элемента инфоблока для копирования"),
-    );
+      
 //до этого обработка данных
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_admin_after.php"); 
 //тут вывод данных
 ?>
+<div align="center">
+<?  if ($_GET["status"]=="OK"){
+      echo "<h2 color='green'>Копирование прошло успешно</h2>";
+    } 
+  ?>
 <form method="POST" action="<?echo $sDocPath?>" ENCTYPE="multipart/form-data" name="dataload">
 <input type="hidden" name="STEP" value="<?echo $STEP;?>">
-<?
-$tabControl = new CAdminTabControl("tabControl", $aTabs,  false, true);	
-$tabControl->Begin();
-//-----------------------------------------------------------------------------------------
-  $tabControl->BeginNextTab();
-    ?>
-      <tr>
-        <td width="40%">Информационный блок для экспорта:</td>
-        <td width="60%">
-          <?echo GetIBlockDropDownList($IBLOCK_ID, 'IBLOCK_TYPE_ID', 'IBLOCK_ID', false, 'class="adm-detail-iblock-types"', 'class="adm-detail-iblock-list"');?>
-        </td>
-      </tr>
-    <?
-  $tabControl->EndTab();
-//-----------------------------------------------------------------------------------------
-  $tabControl->BeginNextTab();
-    ?>
-      <tr>
-        <td width="40%">Информационный блок для экспорта:</td>
-        <td width="60%">
-          <?echo GetIBlockDropDownList($IBLOCK_ID2, 'IBLOCK_TYPE_ID2', 'IBLOCK_ID2', false, 'class="adm-detail-iblock-types"', 'class="adm-detail-iblock-list"');?>
-        </td>
-      </tr>
-    <?
-  $tabControl->EndTab();
-//-----------------------------------------------------------------------------------------
-  $tabControl->BeginNextTab();
-   if ($STEP==3){
-            $lAdmin->DisplayList();
-      }
-  $tabControl->EndTab();
-//-----------------------------------------------------------------------------------------
-?>
-<?
-// завершение формы - вывод кнопок сохранения изменений
-$tabControl->Buttons();
-  if ($STEP<2) {?>
-    <input type="submit" name="nextButton" value="Далее &gt;&gt;">
+<input type="hidden" name="IBLOCK_ID" value="<?echo $IBLOCK_ID;?>">
+<input type="hidden" name="IBLOCK_ID2" value="<?echo $IBLOCK_ID2;?>">
+ <? if ($STEP<2) {?>
+    <input type="submit" name="nextButton" class="adm-btn-save" value="Далее &gt;&gt;">
   <?} else if ($STEP==2){?>
       <input type="submit" name="backButton" value="&lt;&lt; Назад">
-      <input type="submit" name="nextButton" value="Далее &gt;&gt;">
+      <input type="submit" name="nextButton" class="adm-btn-save" value="Далее &gt;&gt;">
   <?} else if ($STEP==3){?>
       <input type="submit" name="backButton" value="&lt;&lt; Назад">
-      <input type="submit" name="Copy" value="Копировать">
+      <input type="submit" name="Copy" class="adm-btn-save" value="Копировать">
   <?}
+  ?>
+  <hr>
+    <? if ($STEP<2) {?>
+      <div>
+        <p width="40%">Информационный блок для экспорта:</p>
+        <p width="60%">
+          <?echo GetIBlockDropDownList($IBLOCK_ID, 'IBLOCK_TYPE_ID', 'IBLOCK_ID', false, 'class="adm-detail-iblock-types"', 'class="adm-detail-iblock-list"');?>
+        </p>
+      </div>
+      <?} else if ($STEP==2){?>
+      <div>
+        <p width="40%">Информационный блок для импорта:</p>
+        <p width="60%">
+          <?echo GetIBlockDropDownList($IBLOCK_ID2, 'IBLOCK_TYPE_ID2', 'IBLOCK_ID2', false, 'class="adm-detail-iblock-types"', 'class="adm-detail-iblock-list"');?>
+        </p>
+      </div>
+         <?} else if ($STEP==3){
+            $lAdmin->DisplayList();
+      }?>
 
-// завершаем интерфейс закладки
-$tabControl->End();
-?>
 </form>
-<script type="text/javaScript">
-<!--
-BX.ready(function() {
-<?if ($STEP < 2):?>
-  tabControl.SelectTab("edit1");
-  tabControl.DisableTab("edit2");
-  tabControl.DisableTab("edit3");
-<?elseif ($STEP == 2):?>
-  tabControl.SelectTab("edit2");
-  tabControl.DisableTab("edit1");
-  tabControl.DisableTab("edit3");
-<?elseif ($STEP > 2):?>
-  tabControl.SelectTab("edit3");
-  tabControl.DisableTab("edit1");
-  tabControl.DisableTab("edit2");
-<?endif;?>
-});
-//-->
-</script>
-
+</div>
 <?
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/epilog_admin.php");
 ?>
