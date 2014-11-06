@@ -8,7 +8,7 @@ if (isset($_POST["STEP"])){
     $STEP=$_POST["STEP"];
 } else {
   $STEP=1;
-}	
+} 
 //--------------------------------------------------------------
 if (isset($_POST["IBLOCK_ID"])){
   $IBLOCK_ID=$_POST["IBLOCK_ID"];
@@ -33,8 +33,8 @@ if (isset($_POST["Copy"])){
 
     $lAdmin=0;
     $sTableID = "tbl_rubric"; // ID таблицы
-    $oSort = new CAdminSorting($sTableID, "ID", "desc"); // объект сортировки
-    $lAdmin = new CAdminList($sTableID, $oSort); // основной объект списка
+    $oSort = new CAdminSorting($sTableID, "TIMESTAMP_X", "ASC"); // объект сортировки
+    $lAdmin = new CAdminList($sTableID, Array()); // основной объект списка
     // проверку значений фильтра для удобства вынесем в отдельную функцию
     function CheckFilter()
     {
@@ -53,6 +53,7 @@ if (isset($_POST["Copy"])){
     $FilterArr = Array(
         "find_id",
         "find_name",
+        "find_time",
         );
 
     // инициализируем фильтр
@@ -65,14 +66,15 @@ if (isset($_POST["Copy"])){
         $arFilter = Array(
             "ID"    => $find_id,
             "NAME"   => $find_lid,
+            "DATE_CREATE"   => $find_time,
         );
     }
 
 
       $cData = new CIBlockElement;
-      $arSelect = Array("ID", "NAME");
+      $arSelect = Array("ID", "NAME", "DATE_CREATE");
       $arFilter = Array("IBLOCK_ID"=>$_POST["IBLOCK_ID"], "ACTIVE_DATE"=>"Y", "ACTIVE"=>"Y");
-      $rsData = $cData->GetList(Array(), $arFilter, false, Array(), $arSelect);
+      $rsData = $cData->GetList(Array("DATE_CREATE"=>"DSC"), $arFilter, false, Array(), $arSelect);
 
       // преобразуем список в экземпляр класса CAdminResult
       $rsData = new CAdminResult($rsData, $sTableID);
@@ -93,6 +95,11 @@ if (isset($_POST["Copy"])){
             "content"  =>"Заголовок",
             "sort"     =>"name",
             "default"  =>true,
+          ),          
+          array(  "id"    =>"DATE_CREATE",
+            "content"  =>"Дата создания",
+            "sort"     =>"time",
+            "default"  =>true,
           ),
         ));
 
@@ -106,6 +113,7 @@ if (isset($_POST["Copy"])){
         // параметр NAME будет редактироваться как текст, а отображаться ссылкой
         $row->AddInputField("ID");
         $row->AddViewField("NAME", $f_NAME);        
+        $row->AddViewField("TIMESTAMP_X", $f_TIMESTAMP_X);        
       endwhile;
 
 
