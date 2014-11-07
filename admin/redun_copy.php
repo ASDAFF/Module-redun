@@ -26,8 +26,9 @@ if (isset($_POST["backButton"])){
 
 
 if (isset($_POST["Copy"])){
-  if (cMainredun::Copy($_POST["IBLOCK_ID"],$_POST["IBLOCK_ID2"],$_POST["ID"])){
-    header('Location: '.$APPLICATION->GetCurPage()."?status=OK");
+ $resultt=cMainredun::Copy($_POST["IBLOCK_ID"],$_POST["IBLOCK_ID2"],$_POST["ID"]);
+  if (count($resultt)>"0"){
+    header('Location: '.$APPLICATION->GetCurPage()."?status=".count($resultt));
   }
 }
 
@@ -124,8 +125,8 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_admin_aft
 //тут вывод данных
 ?>
 <div align="center">
-<?  if ($_GET["status"]=="OK"){
-      echo "<h2 color='green'>Копирование прошло успешно</h2>";
+<?  if (isset($_GET["status"])){
+      echo "<h2 color='green'>Копирование прошло успешно, скопировано ".$_GET["status"]." эл.</h2>";
     } 
   ?>
 <form method="POST" action="<?echo $sDocPath?>" ENCTYPE="multipart/form-data" name="dataload">
