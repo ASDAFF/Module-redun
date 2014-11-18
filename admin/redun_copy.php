@@ -4,29 +4,29 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/redun/include.php"); // 
 //require_once($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/redun/prolog.php"); // инициализация модуля
 CModule::IncludeModule("iblock");
 //--------------------------------------------------------------
-if (isset($_POST["STEP"])){
-    $STEP=$_POST["STEP"];
+if (isset($_GET["STEP"])){
+    $STEP=$_GET["STEP"];
 } else {
   $STEP=1;
 } 
 //--------------------------------------------------------------
-if (isset($_POST["IBLOCK_ID"])){
-  $IBLOCK_ID=$_POST["IBLOCK_ID"];
+if (isset($_GET["IBLOCK_ID"])){
+  $IBLOCK_ID=$_GET["IBLOCK_ID"];
 }
 
-if (isset($_POST["IBLOCK_ID2"])){
-  $IBLOCK_ID2=$_POST["IBLOCK_ID2"];
+if (isset($_GET["IBLOCK_ID2"])){
+  $IBLOCK_ID2=$_GET["IBLOCK_ID2"];
 }
 
-if (isset($_POST["backButton"])){
+if (isset($_GET["backButton"])){
   $STEP=$STEP-1;
-} else if (isset($_POST["nextButton"])){ 
-  $STEP=$_POST["STEP"]+1;
+} else if (isset($_GET["nextButton"])){ 
+  $STEP=$_GET["STEP"]+1;
 }
 
 
-if (isset($_POST["Copy"])){
- $resultt=cMainredun::Copy($_POST["IBLOCK_ID"],$_POST["IBLOCK_ID2"],$_POST["ID"]);
+if (isset($_GET["Copy"])){
+ $resultt=cMainredun::Copy($_GET["IBLOCK_ID"],$_GET["IBLOCK_ID2"],$_GET["ID"]);
   if (count($resultt)>"0"){
     header('Location: '.$APPLICATION->GetCurPage()."?status=".count($resultt));
   }
@@ -74,8 +74,8 @@ if (isset($_POST["Copy"])){
 
       $cData = new CIBlockElement;
       $arSelect = Array("ID", "NAME", "DATE_CREATE");
-      $arFilter = Array("IBLOCK_ID"=>$_POST["IBLOCK_ID"], "ACTIVE_DATE"=>"Y", "ACTIVE"=>"Y");
-      $rsData = $cData->GetList(Array("DATE_CREATE"=>"DSC"), $arFilter, false, Array(), $arSelect);
+      $arFilter = Array("IBLOCK_ID"=>$_GET["IBLOCK_ID"], "ACTIVE_DATE"=>"Y", "ACTIVE"=>"Y");
+      $rsData = $cData->GetList(Array("DATE_CREATE"=>"DSC"), $arFilter, false, Array("nPageSize"=>10), $arSelect);
 
       // преобразуем список в экземпляр класса CAdminResult
       $rsData = new CAdminResult($rsData, $sTableID);
@@ -129,7 +129,7 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_admin_aft
       echo "<h2 color='green'>Копирование прошло успешно, скопировано ".$_GET["status"]." эл.</h2>";
     } 
   ?>
-<form method="POST" action="<?echo $sDocPath?>" ENCTYPE="multipart/form-data" name="dataload">
+<form method="GET" action="<?echo $sDocPath?>" ENCTYPE="multipart/form-data" name="dataload">
 <input type="hidden" name="STEP" value="<?echo $STEP;?>">
 <input type="hidden" name="IBLOCK_ID" value="<?echo $IBLOCK_ID;?>">
 <input type="hidden" name="IBLOCK_ID2" value="<?echo $IBLOCK_ID2;?>">
