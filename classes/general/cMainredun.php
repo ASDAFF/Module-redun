@@ -21,17 +21,17 @@ class cMainredun {
             }
             $el = new CIBlockElement;
             $arLoadProductArray = Array(
-                "NAME"=> $arFields["NAME"],
+                "NAME"=> htmlspecialchars_decode($arFields["NAME"]),
                 "IBLOCK_ID"=> $To,
                 "ACTIVE"=> $arFields["ACTIVE"],
                 "DATE_ACTIVE_FROM"=> $arFields["DATE_ACTIVE_FROM"],
                 "DATE_ACTIVE_TO"=> $arFields["DATE_ACTIVE_TO"],
                 "SORT"=> $arFields["SORT"],
                 "PREVIEW_PICTURE"=> CFile::MakeFileArray($arFields["PREVIEW_PICTURE"]),
-                "PREVIEW_TEXT"=> $arFields["PREVIEW_TEXT"],
+                "PREVIEW_TEXT"=> htmlspecialchars_decode($arFields["PREVIEW_TEXT"]),
                 "PREVIEW_TEXT_TYPE"=> $arFields["PREVIEW_TEXT_TYPE"],
                 "DETAIL_PICTURE"=> CFile::MakeFileArray($arFields["DETAIL_PICTURE"]),
-                "DETAIL_TEXT"=> $arFields["DETAIL_TEXT"],
+                "DETAIL_TEXT"=> htmlspecialchars_decode($arFields["DETAIL_TEXT"]),
                 "DETAIL_TEXT_TYPE"=> $arFields["DETAIL_TEXT_TYPE"],
                 "SEARCHABLE_CONTENT"=> $arFields["SEARCHABLE_CONTENT"],
                 "DATE_CREATE"=> $arFields["DATE_CREATE"],
